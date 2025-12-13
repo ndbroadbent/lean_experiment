@@ -1,0 +1,128 @@
+digraph RustToLeanPipeline {
+    rankdir=TB;
+    bgcolor="#1a1a2e";
+
+    node [
+        fontname="SF Mono, Menlo, monospace"
+        fontsize=11
+        style="filled,rounded"
+        color="#4a4a6a"
+        fontcolor="white"
+    ];
+
+    edge [
+        color="#6c63ff"
+        penwidth=2
+        fontname="SF Mono, Menlo, monospace"
+        fontsize=9
+        fontcolor="#888888"
+    ];
+
+    // Title
+    title [
+        label="Rust → Lean 4 Formal Verification Pipeline"
+        shape=none
+        fontsize=16
+        fontcolor="#ffffff"
+        fontname="SF Mono, Menlo, monospace"
+    ];
+
+    // Rust source code
+    rust [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD ALIGN="LEFT"><FONT COLOR="#ff6b6b">// Rust</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><FONT COLOR="#4ecdc4">pub fn</FONT> <FONT COLOR="#ffd93d">gcd</FONT>(a: u32, b: u32) -&gt; u32 {</TD></TR>
+            <TR><TD ALIGN="LEFT">    <FONT COLOR="#4ecdc4">if</FONT> b == 0 { a }</TD></TR>
+            <TR><TD ALIGN="LEFT">    <FONT COLOR="#4ecdc4">else</FONT> { gcd(b, a % b) }</TD></TR>
+            <TR><TD ALIGN="LEFT">}</TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#2d2d44"
+    ];
+
+    // Charon
+    charon [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD><FONT COLOR="#ff9f43">Charon</FONT></TD></TR>
+            <TR><TD><FONT COLOR="#888888" POINT-SIZE="9">Extract MIR → LLBC</FONT></TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#3d3d5c"
+    ];
+
+    // LLBC
+    llbc [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD><FONT COLOR="#a8a8a8">verified_rust.llbc</FONT></TD></TR>
+            <TR><TD><FONT COLOR="#666666" POINT-SIZE="9">54KB intermediate repr</FONT></TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#2a2a3e"
+        style="filled,rounded,dashed"
+    ];
+
+    // Aeneas
+    aeneas [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD><FONT COLOR="#ff9f43">Aeneas</FONT></TD></TR>
+            <TR><TD><FONT COLOR="#888888" POINT-SIZE="9">LLBC → Pure Lean 4</FONT></TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#3d3d5c"
+    ];
+
+    // Generated Lean
+    lean [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD ALIGN="LEFT"><FONT COLOR="#ff6b6b">-- Auto-generated Lean 4</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><FONT COLOR="#4ecdc4">def</FONT> simple.gcd (a b : U32) : Result U32 :=</TD></TR>
+            <TR><TD ALIGN="LEFT">  <FONT COLOR="#4ecdc4">if</FONT> b = 0#u32</TD></TR>
+            <TR><TD ALIGN="LEFT">  <FONT COLOR="#4ecdc4">then</FONT> ok a</TD></TR>
+            <TR><TD ALIGN="LEFT">  <FONT COLOR="#4ecdc4">else</FONT> <FONT COLOR="#4ecdc4">do</FONT> <FONT COLOR="#4ecdc4">let</FONT> i ← a % b; gcd b i</TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#2d2d44"
+    ];
+
+    // Proof
+    proof [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD ALIGN="LEFT"><FONT COLOR="#ff6b6b">-- Human-written proof</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><FONT COLOR="#4ecdc4">theorem</FONT> <FONT COLOR="#ffd93d">gcd_zero_right</FONT> (a : U32) :</TD></TR>
+            <TR><TD ALIGN="LEFT">    gcd a 0#u32 = ok a := <FONT COLOR="#4ecdc4">by</FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">  unfold gcd; simp</TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#1e3a1e"
+    ];
+
+    // Verified checkmark
+    verified [
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+            <TR><TD><FONT COLOR="#4ecdc4" POINT-SIZE="24">✓</FONT></TD></TR>
+            <TR><TD><FONT COLOR="#4ecdc4">PROVEN</FONT></TD></TR>
+            <TR><TD><FONT COLOR="#666666" POINT-SIZE="9">∀ a : U32, gcd(a, 0) = a</FONT></TD></TR>
+        </TABLE>>
+        shape=box
+        fillcolor="#1e4a1e"
+        color="#4ecdc4"
+        penwidth=2
+    ];
+
+    // Edges
+    title -> rust [style=invis];
+    rust -> charon [label="  cargo"];
+    charon -> llbc;
+    llbc -> aeneas;
+    aeneas -> lean [label="  -backend lean"];
+    lean -> proof [label="  import"];
+    proof -> verified [label="  lake build"];
+
+    // Subgraph for alignment
+    {rank=same; rust}
+    {rank=same; charon}
+    {rank=same; aeneas}
+    {rank=same; lean}
+    {rank=same; proof}
+    {rank=same; verified}
+}
