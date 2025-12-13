@@ -4,6 +4,4 @@
 //! for formal verification. All code is safe, pure where possible,
 //! and avoids features that Aeneas doesn't support.
 
-pub mod math;
-pub mod strings;
-pub mod fibonacci;
+pub mod simple;

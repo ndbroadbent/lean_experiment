@@ -62,13 +62,33 @@ pub fn validate_and_process(input: &str) -> Option<String> {
 
 /// Reverse a string (byte-wise, ASCII only)
 /// Property: reverse(reverse(s)) == s for ASCII
+/// Note: Simplified for Aeneas compatibility
 pub fn reverse_ascii(s: &str) -> String {
-    s.chars().rev().collect()
+    let bytes = s.as_bytes();
+    let len = bytes.len();
+    let mut result = vec![0u8; len];
+    let mut i: usize = 0;
+    while i < len {
+        result[len - 1 - i] = bytes[i];
+        i += 1;
+    }
+    // Safety: we're reversing valid UTF-8 bytes (ASCII only)
+    String::from_utf8(result).unwrap_or_default()
 }
 
-/// Count occurrences of a character
+/// Count occurrences of a character (ASCII)
 pub fn count_char(s: &str, c: char) -> usize {
-    s.chars().filter(|&ch| ch == c).count()
+    let bytes = s.as_bytes();
+    let target = c as u8;
+    let mut count: usize = 0;
+    let mut i: usize = 0;
+    while i < bytes.len() {
+        if bytes[i] == target {
+            count += 1;
+        }
+        i += 1;
+    }
+    count
 }
 
 /// Check if string contains only ASCII digits
@@ -76,22 +96,66 @@ pub fn count_char(s: &str, c: char) -> usize {
 /// Property: is_numeric("12a") == false
 /// Property: is_numeric("") == true (vacuous truth)
 pub fn is_numeric(s: &str) -> bool {
-    s.chars().all(|c| c.is_ascii_digit())
+    let bytes = s.as_bytes();
+    let mut i: usize = 0;
+    while i < bytes.len() {
+        let b = bytes[i];
+        if b < b'0' || b > b'9' {
+            return false;
+        }
+        i += 1;
+    }
+    true
 }
 
 /// Check if string contains only ASCII alphabetic chars
 pub fn is_alphabetic(s: &str) -> bool {
-    s.chars().all(|c| c.is_ascii_alphabetic())
+    let bytes = s.as_bytes();
+    let mut i: usize = 0;
+    while i < bytes.len() {
+        let b = bytes[i];
+        let is_lower = b >= b'a' && b <= b'z';
+        let is_upper = b >= b'A' && b <= b'Z';
+        if !is_lower && !is_upper {
+            return false;
+        }
+        i += 1;
+    }
+    true
 }
 
 /// Convert to uppercase (ASCII only)
 pub fn to_uppercase(s: &str) -> String {
-    s.to_ascii_uppercase()
+    let bytes = s.as_bytes();
+    let mut result = vec![0u8; bytes.len()];
+    let mut i: usize = 0;
+    while i < bytes.len() {
+        let b = bytes[i];
+        if b >= b'a' && b <= b'z' {
+            result[i] = b - 32;
+        } else {
+            result[i] = b;
+        }
+        i += 1;
+    }
+    String::from_utf8(result).unwrap_or_default()
 }
 
 /// Convert to lowercase (ASCII only)
 pub fn to_lowercase(s: &str) -> String {
-    s.to_ascii_lowercase()
+    let bytes = s.as_bytes();
+    let mut result = vec![0u8; bytes.len()];
+    let mut i: usize = 0;
+    while i < bytes.len() {
+        let b = bytes[i];
+        if b >= b'A' && b <= b'Z' {
+            result[i] = b + 32;
+        } else {
+            result[i] = b;
+        }
+        i += 1;
+    }
+    String::from_utf8(result).unwrap_or_default()
 }
 
 /// Trim leading and trailing whitespace
@@ -113,13 +177,32 @@ pub fn substring(s: &str, start: usize, end: usize) -> Option<&str> {
 /// Property: is_palindrome("racecar") == true
 /// Property: is_palindrome("") == true
 /// Property: is_palindrome("a") == true
+/// Note: Simplified to byte-level for Aeneas compatibility
 pub fn is_palindrome(s: &str) -> bool {
-    let chars: Vec<char> = s.chars().map(|c| c.to_ascii_lowercase()).collect();
-    let len = chars.len();
+    let bytes = s.as_bytes();
+    let len = bytes.len();
+    if len == 0 {
+        return true;
+    }
 
-    let mut i = 0;
+    let mut i: usize = 0;
     while i < len / 2 {
-        if chars[i] != chars[len - 1 - i] {
+        let left = bytes[i];
+        let right = bytes[len - 1 - i];
+
+        // Convert to lowercase (ASCII only)
+        let left_lower = if left >= b'A' && left <= b'Z' {
+            left + 32
+        } else {
+            left
+        };
+        let right_lower = if right >= b'A' && right <= b'Z' {
+            right + 32
+        } else {
+            right
+        };
+
+        if left_lower != right_lower {
             return false;
         }
         i += 1;
