@@ -326,7 +326,7 @@ def simulate_photon_journey (p : Photon) : List ScatteringEvent :=
                                     │
                     ┌───────────────▼─────────────────────┐
                     │         ∴ THE SKY IS BLUE           │
-                    │              Q.E.D.                  │
+                    │              Q.E.D.                 │
                     │                                     │
                     │   ✓ PROVEN                          │
                     │   (assuming physics works)          │
@@ -446,7 +446,6 @@ Every proof has axioms. Our `sorry` is simply "physics works as described." If t
 | CPU cycles | 10^47 | 10^20 (Earth's computers) | ❌ Need Dyson sphere |
 | RAM | 10^15 TB | 10^11 TB (global) | ❌ Need Jupiter-brain |
 | Time | 10^9 years | 0.0001 years | ❌ Need time dilation |
-| Coffee | ∞ | Finite | ❌ Fundamental limit |
 
 **Workaround:** Accept `sorry` as axiom. Proof reduces to 0.003 seconds.
 
@@ -458,8 +457,6 @@ We have rigorously proven, to within the precision of modern physics and the lim
 
 **Proof Status:** ✓ VERIFIED (modulo physics)
 
-**Certificate Hash:** `0xBLUE5KY1337RAYLEIGH4EVER`
-
 ---
 
 ## Appendices
@@ -468,7 +465,7 @@ We have rigorously proven, to within the precision of modern physics and the lim
 - **Appendix B:** Proof that electrons exist (requires QED, 1,200 pages)
 - **Appendix C:** Proof that the observer exists (requires Descartes, 1 page: "Cogito ergo sum")
 - **Appendix D:** Proof that Paihia exists (requires Google Maps API)
-- **Appendix E:** Proof that December 13, 2025 will occur (requires axiom of time continuity)
+- **Appendix E:** Proof that December 13, 2025 has occurred (requires axiom of time continuity)
 - **Appendix F:** Proof that "blue" is a coherent concept (requires philosophy of language, ∞ pages)
 - **Appendix Q:** Simulation hypothesis considerations (see: _The Matrix_, 1999)
 
@@ -479,7 +476,6 @@ We have rigorously proven, to within the precision of modern physics and the lim
 1. Rayleigh, Lord. (1871). "On the light from the sky, its polarization and colour."
 2. Newton, I. (1704). *Opticks*.
 3. Descartes, R. (1637). "I think therefore the sky is blue."
-4. This README.md file (self-referential, causes stack overflow)
 
 ---
 
@@ -488,7 +484,6 @@ We have rigorously proven, to within the precision of modern physics and the lim
 - The Sun, for providing photons
 - The atmosphere, for scattering them
 - My eyes, for perceiving the result
-- Coffee, for enabling this proof
 - Claude, for typing it
 
 ---
