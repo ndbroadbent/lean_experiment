@@ -5,3 +5,6 @@
 //! and avoids features that Aeneas doesn't support.
 
 pub mod simple;
+pub mod fibonacci;
+pub mod math;
+pub mod strings;

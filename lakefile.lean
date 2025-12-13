@@ -16,5 +16,11 @@ lean_lib «VerifiedRust» where
 lean_lib «SimpleProofs» where
   roots := #[`SimpleProofs]
 
+lean_lib «FibonacciProofs» where
+  roots := #[`FibonacciProofs]
+
+lean_lib «MathProofs» where
+  roots := #[`MathProofs]
+
 lean_exe «leanexperiment» where
   root := `Main
