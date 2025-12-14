@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "verified_rust"
+name = "utf8_parser"
 version = "0.1.0"
