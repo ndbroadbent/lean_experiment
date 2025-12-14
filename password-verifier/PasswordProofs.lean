@@ -12,6 +12,7 @@
 -/
 
 import PasswordVerifier
+import ConstantTimeProofs
 import Aeneas
 
 open Aeneas.Std Result
@@ -40,12 +41,9 @@ namespace password_verifier.password
 -/
 theorem correct_password_reveals_secret :
     reveal_secret PASSWORD = ok (some SECRET) := by
-  unfold reveal_secret
-  unfold check_password
-  -- check_password PASSWORD = ct_eq_bytes PASSWORD PASSWORD
-  -- By ct_eq_bytes_refl, this returns true
-  -- So we take the `then` branch and return Some(SECRET)
-  sorry -- requires ct_eq_bytes PASSWORD PASSWORD = ok true
+  unfold reveal_secret check_password
+  -- ct_eq_bytes PASSWORD PASSWORD = ok true by ct_eq_bytes_refl
+  simp only [constant_time.ct_eq_bytes_refl, bind_tc_ok]
 
 /-
   THEOREM 2: Wrong password reveals nothing.
@@ -53,15 +51,49 @@ theorem correct_password_reveals_secret :
   This is the "confidentiality" property: an attacker with the wrong
   password cannot access the secret.
 -/
+-- Helper: ct_eq_bytes returns ok false when arrays differ
+theorem ct_eq_bytes_neq (a b : Array U8 8#usize) (h : a ≠ b) :
+    constant_time.ct_eq_bytes a b = ok false := by
+  -- We know ct_eq_bytes_correct: ct_eq_bytes a b = ok true ↔ a = b
+  -- Since a ≠ b, the result cannot be ok true
+  -- We need to show it's ok false (not fail or div)
+  -- First, ct_eq_bytes always succeeds for valid arrays (all indices < 8)
+  unfold constant_time.ct_eq_bytes
+  simp only [bind_tc_ok, toResult]
+  -- Step through array accesses - all succeed because indices are in bounds
+  progress as ⟨a0, _⟩
+  progress as ⟨b0, _⟩
+  progress as ⟨a1, _⟩
+  progress as ⟨b1, _⟩
+  progress as ⟨a2, _⟩
+  progress as ⟨b2, _⟩
+  progress as ⟨a3, _⟩
+  progress as ⟨b3, _⟩
+  progress as ⟨a4, _⟩
+  progress as ⟨b4, _⟩
+  progress as ⟨a5, _⟩
+  progress as ⟨b5, _⟩
+  progress as ⟨a6, _⟩
+  progress as ⟨b6, _⟩
+  progress as ⟨a7, _⟩
+  progress as ⟨b7, _⟩
+  simp only [ok.injEq]
+  -- Now we need to show the accumulator != 0 (so decide gives false)
+  -- Use contrapositive: if result were true, then a = b, contradiction
+  by_contra h_eq
+  push_neg at h_eq
+  -- h_eq says the accumulated OR equals 0
+  have h_true : constant_time.ct_eq_bytes a b = ok true := by
+    unfold constant_time.ct_eq_bytes
+    simp_all only [bind_tc_ok, toResult]
+  have := constant_time.ct_eq_bytes_correct a b |>.mp h_true
+  exact h this
+
 theorem wrong_password_reveals_nothing (input : Array U8 8#usize)
     (h : input ≠ PASSWORD) :
     reveal_secret input = ok none := by
-  unfold reveal_secret
-  unfold check_password
-  -- check_password input = ct_eq_bytes input PASSWORD
-  -- Since input ≠ PASSWORD, this returns false
-  -- So we take the `else` branch and return None
-  sorry -- requires ct_eq_bytes input PASSWORD = ok false when input ≠ PASSWORD
+  unfold reveal_secret check_password
+  simp only [ct_eq_bytes_neq input PASSWORD h, bind_tc_ok]
 
 /-
   THEOREM 3: The secret is only revealed with the correct password.
@@ -108,16 +140,14 @@ theorem secret_iff_correct_password (input : Array U8 8#usize) :
 -/
 theorem reveal_secret_result_correct :
     reveal_secret_result PASSWORD = ok (core.result.Result.Ok SECRET) := by
-  unfold reveal_secret_result
-  unfold check_password
-  sorry -- same reasoning as correct_password_reveals_secret
+  unfold reveal_secret_result check_password
+  simp only [constant_time.ct_eq_bytes_refl, bind_tc_ok]
 
 theorem reveal_secret_result_wrong (input : Array U8 8#usize)
     (h : input ≠ PASSWORD) :
     reveal_secret_result input = ok (core.result.Result.Err ()) := by
-  unfold reveal_secret_result
-  unfold check_password
-  sorry -- same reasoning as wrong_password_reveals_nothing
+  unfold reveal_secret_result check_password
+  simp only [ct_eq_bytes_neq input PASSWORD h, bind_tc_ok]
 
 -- ============================================================================
 -- Structural observation: constant-time property
