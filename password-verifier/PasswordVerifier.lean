@@ -302,25 +302,4 @@ def password.reveal_secret
   then ok (some password.SECRET)
   else ok none
 
-/- [password_verifier::password::reveal_secret_result]:
-   Source: 'src/password.rs', lines 45:0-51:1 -/
-def password.reveal_secret_result
-  (input : Array U8 8#usize) :
-  Result (core.result.Result (Array U8 8#usize) Unit)
-  := do
-  let b ← password.check_password input
-  if b
-  then ok (core.result.Result.Ok password.SECRET)
-  else ok (core.result.Result.Err ())
-
-/- [password_verifier::password::get_secret]:
-   Source: 'src/password.rs', lines 54:0-56:1 -/
-def password.get_secret : Result (Array U8 8#usize) := do
-  ok password.SECRET
-
-/- [password_verifier::password::get_password]:
-   Source: 'src/password.rs', lines 59:0-61:1 -/
-def password.get_password : Result (Array U8 8#usize) := do
-  ok password.PASSWORD
-
 end password_verifier

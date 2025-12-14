@@ -40,25 +40,6 @@ pub fn reveal_secret(input: &[u8; 8]) -> Option<[u8; 8]> {
     }
 }
 
-/// Alternative formulation using Result for Aeneas compatibility.
-/// Returns Ok(secret) on success, Err(()) on failure.
-pub fn reveal_secret_result(input: &[u8; 8]) -> Result<[u8; 8], ()> {
-    if check_password(input) {
-        Ok(SECRET)
-    } else {
-        Err(())
-    }
-}
-
-/// Get the secret bytes directly (for use in proofs).
-pub fn get_secret() -> [u8; 8] {
-    SECRET
-}
-
-/// Get the password bytes directly (for use in proofs).
-pub fn get_password() -> [u8; 8] {
-    PASSWORD
-}
 
 #[cfg(test)]
 mod tests {

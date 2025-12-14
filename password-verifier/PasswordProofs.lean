@@ -125,46 +125,14 @@ theorem secret_iff_correct_password (input : Array U8 8#usize) :
   COROLLARY: The only way to obtain SECRET is through reveal_secret
   with the correct password.
 
-  In the Rust code, SECRET is a constant. The only function that
-  returns it is reveal_secret (and get_secret, which is for testing).
-
   reveal_secret only returns SECRET when check_password returns true.
   check_password only returns true when input = PASSWORD.
 
   Therefore: the only way to get SECRET from reveal_secret is to
   provide PASSWORD as input.
--/
 
-/-
-  Alternative formulation using Result type:
--/
-theorem reveal_secret_result_correct :
-    reveal_secret_result PASSWORD = ok (core.result.Result.Ok SECRET) := by
-  unfold reveal_secret_result check_password
-  simp only [constant_time.ct_eq_bytes_refl, bind_tc_ok]
-
-theorem reveal_secret_result_wrong (input : Array U8 8#usize)
-    (h : input ≠ PASSWORD) :
-    reveal_secret_result input = ok (core.result.Result.Err ()) := by
-  unfold reveal_secret_result check_password
-  simp only [ct_eq_bytes_neq input PASSWORD h, bind_tc_ok]
-
--- ============================================================================
--- Structural observation: constant-time property
--- ============================================================================
-
-/-
-  The constant-time property is inherited from ct_eq_bytes.
-
-  Looking at the generated Lean code for check_password:
-
-    def password.check_password (input : Array U8 8#usize) : Result Bool := do
-      constant_time.ct_eq_bytes input password.PASSWORD
-
-  This directly calls ct_eq_bytes, which we've shown in ConstantTimeProofs.lean
-  to have no early-exit branches. Therefore, check_password also has no
-  timing side-channel that could leak information about how close a guess
-  is to the correct password.
+  The constant-time property is inherited from ct_eq_bytes - there are
+  no early-exit branches in the comparison, preventing timing attacks.
 -/
 
 end password_verifier.password
