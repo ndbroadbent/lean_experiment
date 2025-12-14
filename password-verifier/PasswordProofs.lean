@@ -11,13 +11,13 @@
   hardware level).
 -/
 
-import VerifiedRust
+import PasswordVerifier
 import Aeneas
 
 open Aeneas.Std Result
-open verified_rust
+open password_verifier
 
-namespace verified_rust.password
+namespace password_verifier.password
 
 -- ============================================================================
 -- Constants (these are the actual values from the Rust code)
@@ -137,4 +137,4 @@ theorem reveal_secret_result_wrong (input : Array U8 8#usize)
   is to the correct password.
 -/
 
-end verified_rust.password
+end password_verifier.password

@@ -13,3 +13,6 @@ lean_lib «PasswordVerifier» where
 
 lean_lib «PasswordProofs» where
   roots := #[`PasswordProofs]
+
+lean_lib «ConstantTimeProofs» where
+  roots := #[`ConstantTimeProofs]

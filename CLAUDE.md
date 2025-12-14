@@ -26,15 +26,43 @@ lean_experiment/
 
 ## Tool Installation
 
-**IMPORTANT: NEVER use `nix run github:...` - this recompiles from scratch every time!**
+### CRITICAL: Aeneas/Charon Installation
 
-Install tools once with `nix profile add`:
+**NEVER use `nix run github:...` - this downloads and recompiles from scratch every time!**
+
+Aeneas does NOT have a binary cache (no cachix). The first install compiles ~308 derivations including OCaml, Rust nightly, and the entire toolchain. This takes 10-20+ minutes but only needs to happen ONCE.
+
+**Install aeneas globally with `nix profile add`:**
 ```bash
-nix profile add github:aeneasverif/aeneas#charon
+# Install aeneas (includes charon as a symlink)
+# First run takes a long time (~10-20 min) - this is normal
 nix profile add github:aeneasverif/aeneas#aeneas
+
+# Verify installation
+nix profile list
+ls ~/.nix-profile/bin/  # Should show aeneas and charon
 ```
 
-After installation, `charon` and `aeneas` are available directly in your PATH.
+**IMPORTANT:** Only install `#aeneas` - do NOT install both `#charon` and `#aeneas` together, as this causes a conflict (both provide the `charon` binary).
+
+**If installation fails:**
+1. Check `nix profile list` to see current state
+2. Remove failed entries: `nix profile remove <name>` (e.g., `nix profile remove aeneas`)
+3. Retry the install command
+4. On macOS, ensure Xcode command line tools are installed
+
+**After installation**, `charon` and `aeneas` are available in `~/.nix-profile/bin/`. Ensure this is in your PATH:
+```bash
+# Add to your shell profile if not already present:
+export PATH="$HOME/.nix-profile/bin:$PATH"
+```
+
+**Verify tools work:**
+```bash
+charon --help
+aeneas -help
+```
+(Note: These tools use `-help` not `--version`)
 
 ## Build Commands
 

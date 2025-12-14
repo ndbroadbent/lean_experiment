@@ -12,13 +12,13 @@
   there are no conditionals that could cause early exit.
 -/
 
-import VerifiedRust
+import PasswordVerifier
 import Aeneas
 
 open Aeneas.Std Result
-open verified_rust
+open password_verifier
 
-namespace verified_rust.constant_time
+namespace password_verifier.constant_time
 
 -- ============================================================================
 -- Helper lemmas for UScalar XOR/OR
@@ -468,4 +468,4 @@ theorem ct_eq_bytes_correct (a b : Array U8 8#usize) :
     rw [heq]
     exact ct_eq_bytes_refl b
 
-end verified_rust.constant_time
+end password_verifier.constant_time
