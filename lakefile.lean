@@ -22,5 +22,11 @@ lean_lib «FibonacciProofs» where
 lean_lib «MathProofs» where
   roots := #[`MathProofs]
 
+lean_lib «CharsProofs» where
+  roots := #[`CharsProofs]
+
+lean_lib «Utf8Proofs» where
+  roots := #[`Utf8Proofs]
+
 lean_exe «leanexperiment» where
   root := `Main

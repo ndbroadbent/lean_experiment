@@ -18,7 +18,7 @@ Proofs are binary - either proven or not. Bayesian reasoning deals with probabil
 │                    FORMAL VERIFICATION                          │
 │                    (Binary: ✓ or ✗)                             │
 │                                                                 │
-│  "This code correctly implements P(A|B) = P(B|A)·P(A)/P(B)"    │
+│  "This code correctly implements P(A|B) = P(B|A)·P(A)/P(B)"     │
 │                                                                 │
 │  - Algorithm correctness                                        │
 │  - No division by zero                                          │
@@ -31,7 +31,7 @@ Proofs are binary - either proven or not. Bayesian reasoning deals with probabil
 │                    BAYESIAN REASONING                           │
 │                    (Continuous: 0.0 to 1.0)                     │
 │                                                                 │
-│  "Given my prior of 0.3 and this evidence, posterior is 0.7"   │
+│  "Given my prior of 0.3 and this evidence, posterior is 0.7"    │
 │                                                                 │
 │  - Prior beliefs (where do they come from?)                     │
 │  - Likelihood estimates (model of the world)                    │

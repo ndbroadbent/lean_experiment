@@ -1,2 +1,5 @@
 .lake/
 rust/target
+rust/.nix-*
+rust/*.lean
+rust/*.llbc

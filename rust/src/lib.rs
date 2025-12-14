@@ -8,3 +8,5 @@ pub mod simple;
 pub mod fibonacci;
 pub mod math;
 pub mod strings;
+pub mod chars;
+pub mod utf8;
