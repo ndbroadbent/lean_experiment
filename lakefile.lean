@@ -28,5 +28,11 @@ lean_lib «CharsProofs» where
 lean_lib «Utf8Proofs» where
   roots := #[`Utf8Proofs]
 
+lean_lib «ConstantTimeProofs» where
+  roots := #[`ConstantTimeProofs]
+
+lean_lib «PasswordProofs» where
+  roots := #[`PasswordProofs]
+
 lean_exe «leanexperiment» where
   root := `Main

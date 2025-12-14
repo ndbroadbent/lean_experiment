@@ -5,8 +5,329 @@ open Aeneas.Std Result Error
 set_option linter.dupNamespace false
 set_option linter.hashCommand false
 set_option linter.unusedVariables false
+set_option maxRecDepth 1024
 
 namespace verified_rust
+
+/- [verified_rust::chars::concat_chars]:
+   Source: 'src/chars.rs', lines 12:0-14:1 -/
+def chars.concat_chars (a : U8) (b : U8) : Result U16 := do
+  let i ← (↑(UScalar.cast .U16 a) : Result U16)
+  let i1 ← i <<< 8#i32
+  let i2 ← (↑(UScalar.cast .U16 b) : Result U16)
+  ok (i1 ||| i2)
+
+/- [verified_rust::chars::first_char]:
+   Source: 'src/chars.rs', lines 19:0-21:1 -/
+def chars.first_char (s : U16) : Result U8 := do
+  let i ← s >>> 8#i32
+  ok (UScalar.cast .U8 i)
+
+/- [verified_rust::chars::second_char]:
+   Source: 'src/chars.rs', lines 26:0-28:1 -/
+def chars.second_char (s : U16) : Result U8 := do
+  let i ← (↑(s &&& 255#u16) : Result U16)
+  ok (UScalar.cast .U8 i)
+
+/- [verified_rust::chars::chars_equal]:
+   Source: 'src/chars.rs', lines 33:0-35:1 -/
+def chars.chars_equal (s1 : U16) (s2 : U16) : Result Bool := do
+  ok (s1 = s2)
+
+/- [verified_rust::chars::chars_len]:
+   Source: 'src/chars.rs', lines 40:0-42:1 -/
+def chars.chars_len (_s : U16) : Result U8 := do
+  ok 2#u8
+
+/- [verified_rust::chars::array_concat]:
+   Source: 'src/chars.rs', lines 50:0-52:1 -/
+def chars.array_concat (a : U8) (b : U8) : Result (Array U8 2#usize) := do
+  ok (Array.make 2#usize [ a, b ])
+
+/- [verified_rust::chars::array_first]:
+   Source: 'src/chars.rs', lines 55:0-57:1 -/
+def chars.array_first (s : Array U8 2#usize) : Result U8 := do
+  Array.index_usize s 0#usize
+
+/- [verified_rust::chars::array_second]:
+   Source: 'src/chars.rs', lines 60:0-62:1 -/
+def chars.array_second (s : Array U8 2#usize) : Result U8 := do
+  Array.index_usize s 1#usize
+
+/- [verified_rust::chars::array_equal]:
+   Source: 'src/chars.rs', lines 65:0-67:1 -/
+def chars.array_equal
+  (s1 : Array U8 2#usize) (s2 : Array U8 2#usize) : Result Bool := do
+  let i ← Array.index_usize s1 0#usize
+  let i1 ← Array.index_usize s2 0#usize
+  if i = i1
+  then
+    let i2 ← Array.index_usize s1 1#usize
+    let i3 ← Array.index_usize s2 1#usize
+    ok (i2 = i3)
+  else ok false
+
+/- [verified_rust::chars::array_len]:
+   Source: 'src/chars.rs', lines 70:0-72:1 -/
+def chars.array_len (_s : Array U8 2#usize) : Result Usize := do
+  ok 2#usize
+
+/- [verified_rust::constant_time::ct_eq_bytes]:
+   Source: 'src/constant_time.rs', lines 17:0-31:1 -/
+def constant_time.ct_eq_bytes
+  (a : Array U8 8#usize) (b : Array U8 8#usize) : Result Bool := do
+  let i ← Array.index_usize a 0#usize
+  let i1 ← Array.index_usize b 0#usize
+  let i2 ← (↑(i ^^^ i1) : Result U8)
+  let acc ← (↑(0#u8 ||| i2) : Result U8)
+  let i3 ← Array.index_usize a 1#usize
+  let i4 ← Array.index_usize b 1#usize
+  let i5 ← (↑(i3 ^^^ i4) : Result U8)
+  let acc1 ← (↑(acc ||| i5) : Result U8)
+  let i6 ← Array.index_usize a 2#usize
+  let i7 ← Array.index_usize b 2#usize
+  let i8 ← (↑(i6 ^^^ i7) : Result U8)
+  let acc2 ← (↑(acc1 ||| i8) : Result U8)
+  let i9 ← Array.index_usize a 3#usize
+  let i10 ← Array.index_usize b 3#usize
+  let i11 ← (↑(i9 ^^^ i10) : Result U8)
+  let acc3 ← (↑(acc2 ||| i11) : Result U8)
+  let i12 ← Array.index_usize a 4#usize
+  let i13 ← Array.index_usize b 4#usize
+  let i14 ← (↑(i12 ^^^ i13) : Result U8)
+  let acc4 ← (↑(acc3 ||| i14) : Result U8)
+  let i15 ← Array.index_usize a 5#usize
+  let i16 ← Array.index_usize b 5#usize
+  let i17 ← (↑(i15 ^^^ i16) : Result U8)
+  let acc5 ← (↑(acc4 ||| i17) : Result U8)
+  let i18 ← Array.index_usize a 6#usize
+  let i19 ← Array.index_usize b 6#usize
+  let i20 ← (↑(i18 ^^^ i19) : Result U8)
+  let acc6 ← (↑(acc5 ||| i20) : Result U8)
+  let i21 ← Array.index_usize a 7#usize
+  let i22 ← Array.index_usize b 7#usize
+  let i23 ← (↑(i21 ^^^ i22) : Result U8)
+  let acc7 ← (↑(acc6 ||| i23) : Result U8)
+  ok (acc7 = 0#u8)
+
+/- [verified_rust::constant_time::ct_eq_16]:
+   Source: 'src/constant_time.rs', lines 34:0-55:1 -/
+def constant_time.ct_eq_16
+  (a : Array U8 16#usize) (b : Array U8 16#usize) : Result Bool := do
+  let i ← Array.index_usize a 0#usize
+  let i1 ← Array.index_usize b 0#usize
+  let i2 ← (↑(i ^^^ i1) : Result U8)
+  let acc ← (↑(0#u8 ||| i2) : Result U8)
+  let i3 ← Array.index_usize a 1#usize
+  let i4 ← Array.index_usize b 1#usize
+  let i5 ← (↑(i3 ^^^ i4) : Result U8)
+  let acc1 ← (↑(acc ||| i5) : Result U8)
+  let i6 ← Array.index_usize a 2#usize
+  let i7 ← Array.index_usize b 2#usize
+  let i8 ← (↑(i6 ^^^ i7) : Result U8)
+  let acc2 ← (↑(acc1 ||| i8) : Result U8)
+  let i9 ← Array.index_usize a 3#usize
+  let i10 ← Array.index_usize b 3#usize
+  let i11 ← (↑(i9 ^^^ i10) : Result U8)
+  let acc3 ← (↑(acc2 ||| i11) : Result U8)
+  let i12 ← Array.index_usize a 4#usize
+  let i13 ← Array.index_usize b 4#usize
+  let i14 ← (↑(i12 ^^^ i13) : Result U8)
+  let acc4 ← (↑(acc3 ||| i14) : Result U8)
+  let i15 ← Array.index_usize a 5#usize
+  let i16 ← Array.index_usize b 5#usize
+  let i17 ← (↑(i15 ^^^ i16) : Result U8)
+  let acc5 ← (↑(acc4 ||| i17) : Result U8)
+  let i18 ← Array.index_usize a 6#usize
+  let i19 ← Array.index_usize b 6#usize
+  let i20 ← (↑(i18 ^^^ i19) : Result U8)
+  let acc6 ← (↑(acc5 ||| i20) : Result U8)
+  let i21 ← Array.index_usize a 7#usize
+  let i22 ← Array.index_usize b 7#usize
+  let i23 ← (↑(i21 ^^^ i22) : Result U8)
+  let acc7 ← (↑(acc6 ||| i23) : Result U8)
+  let i24 ← Array.index_usize a 8#usize
+  let i25 ← Array.index_usize b 8#usize
+  let i26 ← (↑(i24 ^^^ i25) : Result U8)
+  let acc8 ← (↑(acc7 ||| i26) : Result U8)
+  let i27 ← Array.index_usize a 9#usize
+  let i28 ← Array.index_usize b 9#usize
+  let i29 ← (↑(i27 ^^^ i28) : Result U8)
+  let acc9 ← (↑(acc8 ||| i29) : Result U8)
+  let i30 ← Array.index_usize a 10#usize
+  let i31 ← Array.index_usize b 10#usize
+  let i32 ← (↑(i30 ^^^ i31) : Result U8)
+  let acc10 ← (↑(acc9 ||| i32) : Result U8)
+  let i33 ← Array.index_usize a 11#usize
+  let i34 ← Array.index_usize b 11#usize
+  let i35 ← (↑(i33 ^^^ i34) : Result U8)
+  let acc11 ← (↑(acc10 ||| i35) : Result U8)
+  let i36 ← Array.index_usize a 12#usize
+  let i37 ← Array.index_usize b 12#usize
+  let i38 ← (↑(i36 ^^^ i37) : Result U8)
+  let acc12 ← (↑(acc11 ||| i38) : Result U8)
+  let i39 ← Array.index_usize a 13#usize
+  let i40 ← Array.index_usize b 13#usize
+  let i41 ← (↑(i39 ^^^ i40) : Result U8)
+  let acc13 ← (↑(acc12 ||| i41) : Result U8)
+  let i42 ← Array.index_usize a 14#usize
+  let i43 ← Array.index_usize b 14#usize
+  let i44 ← (↑(i42 ^^^ i43) : Result U8)
+  let acc14 ← (↑(acc13 ||| i44) : Result U8)
+  let i45 ← Array.index_usize a 15#usize
+  let i46 ← Array.index_usize b 15#usize
+  let i47 ← (↑(i45 ^^^ i46) : Result U8)
+  let acc15 ← (↑(acc14 ||| i47) : Result U8)
+  ok (acc15 = 0#u8)
+
+/- [verified_rust::constant_time::ct_eq_32]:
+   Source: 'src/constant_time.rs', lines 58:0-98:1 -/
+def constant_time.ct_eq_32
+  (a : Array U8 32#usize) (b : Array U8 32#usize) : Result Bool := do
+  let i ← Array.index_usize a 0#usize
+  let i1 ← Array.index_usize b 0#usize
+  let i2 ← (↑(i ^^^ i1) : Result U8)
+  let acc ← (↑(0#u8 ||| i2) : Result U8)
+  let i3 ← Array.index_usize a 1#usize
+  let i4 ← Array.index_usize b 1#usize
+  let i5 ← (↑(i3 ^^^ i4) : Result U8)
+  let acc1 ← (↑(acc ||| i5) : Result U8)
+  let i6 ← Array.index_usize a 2#usize
+  let i7 ← Array.index_usize b 2#usize
+  let i8 ← (↑(i6 ^^^ i7) : Result U8)
+  let acc2 ← (↑(acc1 ||| i8) : Result U8)
+  let i9 ← Array.index_usize a 3#usize
+  let i10 ← Array.index_usize b 3#usize
+  let i11 ← (↑(i9 ^^^ i10) : Result U8)
+  let acc3 ← (↑(acc2 ||| i11) : Result U8)
+  let i12 ← Array.index_usize a 4#usize
+  let i13 ← Array.index_usize b 4#usize
+  let i14 ← (↑(i12 ^^^ i13) : Result U8)
+  let acc4 ← (↑(acc3 ||| i14) : Result U8)
+  let i15 ← Array.index_usize a 5#usize
+  let i16 ← Array.index_usize b 5#usize
+  let i17 ← (↑(i15 ^^^ i16) : Result U8)
+  let acc5 ← (↑(acc4 ||| i17) : Result U8)
+  let i18 ← Array.index_usize a 6#usize
+  let i19 ← Array.index_usize b 6#usize
+  let i20 ← (↑(i18 ^^^ i19) : Result U8)
+  let acc6 ← (↑(acc5 ||| i20) : Result U8)
+  let i21 ← Array.index_usize a 7#usize
+  let i22 ← Array.index_usize b 7#usize
+  let i23 ← (↑(i21 ^^^ i22) : Result U8)
+  let acc7 ← (↑(acc6 ||| i23) : Result U8)
+  let i24 ← Array.index_usize a 8#usize
+  let i25 ← Array.index_usize b 8#usize
+  let i26 ← (↑(i24 ^^^ i25) : Result U8)
+  let acc8 ← (↑(acc7 ||| i26) : Result U8)
+  let i27 ← Array.index_usize a 9#usize
+  let i28 ← Array.index_usize b 9#usize
+  let i29 ← (↑(i27 ^^^ i28) : Result U8)
+  let acc9 ← (↑(acc8 ||| i29) : Result U8)
+  let i30 ← Array.index_usize a 10#usize
+  let i31 ← Array.index_usize b 10#usize
+  let i32 ← (↑(i30 ^^^ i31) : Result U8)
+  let acc10 ← (↑(acc9 ||| i32) : Result U8)
+  let i33 ← Array.index_usize a 11#usize
+  let i34 ← Array.index_usize b 11#usize
+  let i35 ← (↑(i33 ^^^ i34) : Result U8)
+  let acc11 ← (↑(acc10 ||| i35) : Result U8)
+  let i36 ← Array.index_usize a 12#usize
+  let i37 ← Array.index_usize b 12#usize
+  let i38 ← (↑(i36 ^^^ i37) : Result U8)
+  let acc12 ← (↑(acc11 ||| i38) : Result U8)
+  let i39 ← Array.index_usize a 13#usize
+  let i40 ← Array.index_usize b 13#usize
+  let i41 ← (↑(i39 ^^^ i40) : Result U8)
+  let acc13 ← (↑(acc12 ||| i41) : Result U8)
+  let i42 ← Array.index_usize a 14#usize
+  let i43 ← Array.index_usize b 14#usize
+  let i44 ← (↑(i42 ^^^ i43) : Result U8)
+  let acc14 ← (↑(acc13 ||| i44) : Result U8)
+  let i45 ← Array.index_usize a 15#usize
+  let i46 ← Array.index_usize b 15#usize
+  let i47 ← (↑(i45 ^^^ i46) : Result U8)
+  let acc15 ← (↑(acc14 ||| i47) : Result U8)
+  let i48 ← Array.index_usize a 16#usize
+  let i49 ← Array.index_usize b 16#usize
+  let i50 ← (↑(i48 ^^^ i49) : Result U8)
+  let acc16 ← (↑(acc15 ||| i50) : Result U8)
+  let i51 ← Array.index_usize a 17#usize
+  let i52 ← Array.index_usize b 17#usize
+  let i53 ← (↑(i51 ^^^ i52) : Result U8)
+  let acc17 ← (↑(acc16 ||| i53) : Result U8)
+  let i54 ← Array.index_usize a 18#usize
+  let i55 ← Array.index_usize b 18#usize
+  let i56 ← (↑(i54 ^^^ i55) : Result U8)
+  let acc18 ← (↑(acc17 ||| i56) : Result U8)
+  let i57 ← Array.index_usize a 19#usize
+  let i58 ← Array.index_usize b 19#usize
+  let i59 ← (↑(i57 ^^^ i58) : Result U8)
+  let acc19 ← (↑(acc18 ||| i59) : Result U8)
+  let i60 ← Array.index_usize a 20#usize
+  let i61 ← Array.index_usize b 20#usize
+  let i62 ← (↑(i60 ^^^ i61) : Result U8)
+  let acc20 ← (↑(acc19 ||| i62) : Result U8)
+  let i63 ← Array.index_usize a 21#usize
+  let i64 ← Array.index_usize b 21#usize
+  let i65 ← (↑(i63 ^^^ i64) : Result U8)
+  let acc21 ← (↑(acc20 ||| i65) : Result U8)
+  let i66 ← Array.index_usize a 22#usize
+  let i67 ← Array.index_usize b 22#usize
+  let i68 ← (↑(i66 ^^^ i67) : Result U8)
+  let acc22 ← (↑(acc21 ||| i68) : Result U8)
+  let i69 ← Array.index_usize a 23#usize
+  let i70 ← Array.index_usize b 23#usize
+  let i71 ← (↑(i69 ^^^ i70) : Result U8)
+  let acc23 ← (↑(acc22 ||| i71) : Result U8)
+  let i72 ← Array.index_usize a 24#usize
+  let i73 ← Array.index_usize b 24#usize
+  let i74 ← (↑(i72 ^^^ i73) : Result U8)
+  let acc24 ← (↑(acc23 ||| i74) : Result U8)
+  let i75 ← Array.index_usize a 25#usize
+  let i76 ← Array.index_usize b 25#usize
+  let i77 ← (↑(i75 ^^^ i76) : Result U8)
+  let acc25 ← (↑(acc24 ||| i77) : Result U8)
+  let i78 ← Array.index_usize a 26#usize
+  let i79 ← Array.index_usize b 26#usize
+  let i80 ← (↑(i78 ^^^ i79) : Result U8)
+  let acc26 ← (↑(acc25 ||| i80) : Result U8)
+  let i81 ← Array.index_usize a 27#usize
+  let i82 ← Array.index_usize b 27#usize
+  let i83 ← (↑(i81 ^^^ i82) : Result U8)
+  let acc27 ← (↑(acc26 ||| i83) : Result U8)
+  let i84 ← Array.index_usize a 28#usize
+  let i85 ← Array.index_usize b 28#usize
+  let i86 ← (↑(i84 ^^^ i85) : Result U8)
+  let acc28 ← (↑(acc27 ||| i86) : Result U8)
+  let i87 ← Array.index_usize a 29#usize
+  let i88 ← Array.index_usize b 29#usize
+  let i89 ← (↑(i87 ^^^ i88) : Result U8)
+  let acc29 ← (↑(acc28 ||| i89) : Result U8)
+  let i90 ← Array.index_usize a 30#usize
+  let i91 ← Array.index_usize b 30#usize
+  let i92 ← (↑(i90 ^^^ i91) : Result U8)
+  let acc30 ← (↑(acc29 ||| i92) : Result U8)
+  let i93 ← Array.index_usize a 31#usize
+  let i94 ← Array.index_usize b 31#usize
+  let i95 ← (↑(i93 ^^^ i94) : Result U8)
+  let acc31 ← (↑(acc30 ||| i95) : Result U8)
+  ok (acc31 = 0#u8)
+
+/- [verified_rust::constant_time::xor_byte]:
+   Source: 'src/constant_time.rs', lines 101:0-103:1 -/
+def constant_time.xor_byte (a : U8) (b : U8) : Result U8 := do
+  ok (a ^^^ b)
+
+/- [verified_rust::constant_time::or_byte]:
+   Source: 'src/constant_time.rs', lines 106:0-108:1 -/
+def constant_time.or_byte (a : U8) (b : U8) : Result U8 := do
+  ok (a ||| b)
+
+/- [verified_rust::constant_time::is_zero]:
+   Source: 'src/constant_time.rs', lines 111:0-113:1 -/
+def constant_time.is_zero (x : U8) : Result Bool := do
+  ok (x = 0#u8)
 
 /- [verified_rust::fibonacci::fib_iter]: loop 0:
    Source: 'src/fibonacci.rs', lines 30:4-35:5 -/
@@ -343,6 +664,63 @@ def math.is_prime (n : U32) : Result Bool := do
       then ok false
       else math.is_prime_loop n 3#u32
 
+/- [verified_rust::password::SECRET]
+   Source: 'src/password.rs', lines 16:0-16:66 -/
+@[global_simps]
+def password.SECRET_body : Result (Array U8 8#usize) := do
+  ok
+    (Array.make 8#usize [
+      84#u8, 104#u8, 101#u8, 32#u8, 107#u8, 101#u8, 121#u8, 33#u8
+      ])
+@[global_simps, irreducible]
+def password.SECRET : Array U8 8#usize := eval_global password.SECRET_body
+
+/- [verified_rust::password::PASSWORD]
+   Source: 'src/password.rs', lines 21:0-21:69 -/
+@[global_simps]
+def password.PASSWORD_body : Result (Array U8 8#usize) := do
+  ok
+    (Array.make 8#usize [
+      104#u8, 117#u8, 110#u8, 116#u8, 101#u8, 114#u8, 52#u8, 50#u8
+      ])
+@[global_simps, irreducible]
+def password.PASSWORD : Array U8 8#usize := eval_global password.PASSWORD_body
+
+/- [verified_rust::password::check_password]:
+   Source: 'src/password.rs', lines 25:0-27:1 -/
+def password.check_password (input : Array U8 8#usize) : Result Bool := do
+  constant_time.ct_eq_bytes input password.PASSWORD
+
+/- [verified_rust::password::reveal_secret]:
+   Source: 'src/password.rs', lines 35:0-41:1 -/
+def password.reveal_secret
+  (input : Array U8 8#usize) : Result (Option (Array U8 8#usize)) := do
+  let b ← password.check_password input
+  if b
+  then ok (some password.SECRET)
+  else ok none
+
+/- [verified_rust::password::reveal_secret_result]:
+   Source: 'src/password.rs', lines 45:0-51:1 -/
+def password.reveal_secret_result
+  (input : Array U8 8#usize) :
+  Result (core.result.Result (Array U8 8#usize) Unit)
+  := do
+  let b ← password.check_password input
+  if b
+  then ok (core.result.Result.Ok password.SECRET)
+  else ok (core.result.Result.Err ())
+
+/- [verified_rust::password::get_secret]:
+   Source: 'src/password.rs', lines 54:0-56:1 -/
+def password.get_secret : Result (Array U8 8#usize) := do
+  ok password.SECRET
+
+/- [verified_rust::password::get_password]:
+   Source: 'src/password.rs', lines 59:0-61:1 -/
+def password.get_password : Result (Array U8 8#usize) := do
+  ok password.PASSWORD
+
 /- [verified_rust::simple::add]:
    Source: 'src/simple.rs', lines 5:0-7:1 -/
 def simple.add (a : U32) (b : U32) : Result U32 := do
@@ -394,5 +772,154 @@ def simple.abs_diff (a : U32) (b : U32) : Result U32 := do
   if a > b
   then a - b
   else b - a
+
+/- [verified_rust::utf8::sequence_length]:
+   Source: 'src/utf8.rs', lines 14:0-26:1 -/
+def utf8.sequence_length (first_byte : U8) : Result U8 := do
+  let i ← (↑(first_byte &&& 128#u8) : Result U8)
+  if i = 0#u8
+  then ok 1#u8
+  else
+    let i1 ← (↑(first_byte &&& 224#u8) : Result U8)
+    if i1 = 192#u8
+    then ok 2#u8
+    else
+      let i2 ← (↑(first_byte &&& 240#u8) : Result U8)
+      if i2 = 224#u8
+      then ok 3#u8
+      else
+        let i3 ← (↑(first_byte &&& 248#u8) : Result U8)
+        if i3 = 240#u8
+        then ok 4#u8
+        else ok 0#u8
+
+/- [verified_rust::utf8::is_continuation]:
+   Source: 'src/utf8.rs', lines 29:0-31:1 -/
+def utf8.is_continuation (byte : U8) : Result Bool := do
+  let i ← (↑(byte &&& 192#u8) : Result U8)
+  ok (i = 128#u8)
+
+/- [verified_rust::utf8::is_leading]:
+   Source: 'src/utf8.rs', lines 34:0-36:1 -/
+def utf8.is_leading (byte : U8) : Result Bool := do
+  let i ← utf8.sequence_length byte
+  ok (i > 0#u8)
+
+/- [verified_rust::utf8::validate_1byte]:
+   Source: 'src/utf8.rs', lines 39:0-41:1 -/
+def utf8.validate_1byte (b0 : U8) : Result Bool := do
+  let i ← utf8.sequence_length b0
+  ok (i = 1#u8)
+
+/- [verified_rust::utf8::validate_2byte]:
+   Source: 'src/utf8.rs', lines 44:0-46:1 -/
+def utf8.validate_2byte (b0 : U8) (b1 : U8) : Result Bool := do
+  let i ← utf8.sequence_length b0
+  if i = 2#u8
+  then utf8.is_continuation b1
+  else ok false
+
+/- [verified_rust::utf8::validate_3byte]:
+   Source: 'src/utf8.rs', lines 49:0-51:1 -/
+def utf8.validate_3byte (b0 : U8) (b1 : U8) (b2 : U8) : Result Bool := do
+  let i ← utf8.sequence_length b0
+  if i = 3#u8
+  then
+    let b ← utf8.is_continuation b1
+    if b
+    then utf8.is_continuation b2
+    else ok false
+  else ok false
+
+/- [verified_rust::utf8::validate_4byte]:
+   Source: 'src/utf8.rs', lines 54:0-59:1 -/
+def utf8.validate_4byte
+  (b0 : U8) (b1 : U8) (b2 : U8) (b3 : U8) : Result Bool := do
+  let i ← utf8.sequence_length b0
+  if i = 4#u8
+  then
+    let b ← utf8.is_continuation b1
+    if b
+    then
+      let b4 ← utf8.is_continuation b2
+      if b4
+      then utf8.is_continuation b3
+      else ok false
+    else ok false
+  else ok false
+
+/- [verified_rust::utf8::CodePoint]
+   Source: 'src/utf8.rs', lines 65:0-68:1 -/
+structure utf8.CodePoint where
+  bytes : Array U8 4#usize
+  len : U8
+
+/- [verified_rust::utf8::code_point_1]:
+   Source: 'src/utf8.rs', lines 71:0-76:1 -/
+def utf8.code_point_1 (b0 : U8) : Result utf8.CodePoint := do
+  ok { bytes := (Array.make 4#usize [ b0, 0#u8, 0#u8, 0#u8 ]), len := 1#u8 }
+
+/- [verified_rust::utf8::code_point_2]:
+   Source: 'src/utf8.rs', lines 79:0-84:1 -/
+def utf8.code_point_2 (b0 : U8) (b1 : U8) : Result utf8.CodePoint := do
+  ok { bytes := (Array.make 4#usize [ b0, b1, 0#u8, 0#u8 ]), len := 2#u8 }
+
+/- [verified_rust::utf8::code_point_3]:
+   Source: 'src/utf8.rs', lines 87:0-92:1 -/
+def utf8.code_point_3
+  (b0 : U8) (b1 : U8) (b2 : U8) : Result utf8.CodePoint := do
+  ok { bytes := (Array.make 4#usize [ b0, b1, b2, 0#u8 ]), len := 3#u8 }
+
+/- [verified_rust::utf8::code_point_4]:
+   Source: 'src/utf8.rs', lines 95:0-100:1 -/
+def utf8.code_point_4
+  (b0 : U8) (b1 : U8) (b2 : U8) (b3 : U8) : Result utf8.CodePoint := do
+  ok { bytes := (Array.make 4#usize [ b0, b1, b2, b3 ]), len := 4#u8 }
+
+/- [verified_rust::utf8::code_point_byte0]:
+   Source: 'src/utf8.rs', lines 103:0-105:1 -/
+def utf8.code_point_byte0 (cp : utf8.CodePoint) : Result U8 := do
+  Array.index_usize cp.bytes 0#usize
+
+/- [verified_rust::utf8::code_point_byte1]:
+   Source: 'src/utf8.rs', lines 108:0-110:1 -/
+def utf8.code_point_byte1 (cp : utf8.CodePoint) : Result U8 := do
+  Array.index_usize cp.bytes 1#usize
+
+/- [verified_rust::utf8::code_point_byte2]:
+   Source: 'src/utf8.rs', lines 113:0-115:1 -/
+def utf8.code_point_byte2 (cp : utf8.CodePoint) : Result U8 := do
+  Array.index_usize cp.bytes 2#usize
+
+/- [verified_rust::utf8::code_point_byte3]:
+   Source: 'src/utf8.rs', lines 118:0-120:1 -/
+def utf8.code_point_byte3 (cp : utf8.CodePoint) : Result U8 := do
+  Array.index_usize cp.bytes 3#usize
+
+/- [verified_rust::utf8::code_point_eq]:
+   Source: 'src/utf8.rs', lines 123:0-129:1 -/
+def utf8.code_point_eq
+  (a : utf8.CodePoint) (b : utf8.CodePoint) : Result Bool := do
+  if a.len = b.len
+  then
+    let i ← Array.index_usize a.bytes 0#usize
+    let i1 ← Array.index_usize b.bytes 0#usize
+    if i = i1
+    then
+      let i2 ← Array.index_usize a.bytes 1#usize
+      let i3 ← Array.index_usize b.bytes 1#usize
+      if i2 = i3
+      then
+        let i4 ← Array.index_usize a.bytes 2#usize
+        let i5 ← Array.index_usize b.bytes 2#usize
+        if i4 = i5
+        then
+          let i6 ← Array.index_usize a.bytes 3#usize
+          let i7 ← Array.index_usize b.bytes 3#usize
+          ok (i6 = i7)
+        else ok false
+      else ok false
+    else ok false
+  else ok false
 
 end verified_rust
