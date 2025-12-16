@@ -11,3 +11,13 @@ require mathlib from git
 lean_lib «ABCProductDivisibility» where
 
 lean_lib «ABCCounterexample» where
+
+lean_lib «ABCElegantProof_v1» where
+
+lean_lib «ABCElegantProof_v2» where
+
+lean_lib «ABCElegantProof_v3» where
+
+lean_lib «AcerFurProof» where
+
+lean_lib «AcerFurProof_v2» where

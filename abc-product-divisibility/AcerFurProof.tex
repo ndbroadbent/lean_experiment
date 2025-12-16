@@ -1,0 +1,80 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+
+\paragraph{Claim.}
+This is in fact false. Let us try to find consecutive primes $p,q,r$ with
+\[
+a = pq < b = pr < c = qr
+\]
+such that $2a > c$, so as to force only a single multiple of $a$ (and hence of
+$b$ and $c$) in a block of $c$ consecutive numbers.
+
+The first such case is $p=7$, $q=11$, and $r=13$. We have
+\[
+c = 11 \cdot 13 = 143
+\quad \text{and} \quad
+\frac{c-1}{2} = 71.
+\]
+Furthermore,
+\[
+\operatorname{lcm}(a,b,c) = 7 \cdot 11 \cdot 13 = 1001,
+\]
+so let us consider the block of $143$ numbers given by
+\[
+[1001n - 71,\; 1001n + 71],
+\]
+where $n$ is some positive integer coprime to $1001$ to be determined.
+
+To satisfy the given problem, we would need to find three distinct numbers in
+this block such that their product is divisible by
+\[
+abc = 7^2 \cdot 11^2 \cdot 13^2.
+\]
+
+By our constraint $2a > c$, there cannot be another common multiple of two of
+these primes within $7 \cdot 11 = 77$ of the central midpoint value $1001n$; i.e.\ we
+require multiples of $7^2$, $11^2$, and $13^2$ in the block to be the three
+numbers we choose, as $n$ is also coprime to $7,11,13$ and thus we cannot pick
+up their squares from $n$.
+
+Since $7^2, 11^2 < c$, this is possible for $7^2$ and $11^2$, but since
+\[
+71 \equiv 6 \pmod{13},
+\]
+to have a multiple of $13^2$ in the block it must be within
+\[
+[n \cdot 7 \cdot 11 \cdot 13 - (71 - 6),\;
+ n \cdot 7 \cdot 11 \cdot 13 + (71 - 6)],
+\]
+i.e.\ within
+\[
+[13(77n - 5),\; 13(77n + 5)],
+\]
+and hence we need a multiple of $13$ in
+\[
+[77n - 5,\; 77n + 5].
+\]
+
+Modulo $13$, this interval is $[-n - 5,\; -n + 5]$, as $13 \mid 78$, which
+modulo $13$ is also $[8 - n,\; 18 - n]$.
+
+Now $n \in \{1,\dots,5\}$ gives that $13$ is contained in this interval, but
+with $n=6$ we require a multiple of $13$ in $[2,12]$, for which there clearly
+is not.
+
+Hence, taking
+\[
+a = 7 \cdot 11 = 77 < b = 7 \cdot 13 = 91 < c = 11 \cdot 13 = 143,
+\]
+the block of $c$ consecutive naturals
+\[
+[6 \cdot 7 \cdot 11 \cdot 13 - 71,\; 6 \cdot 7 \cdot 11 \cdot 13 + 71]
+= [5935,\,6077]
+\]
+does not include any three distinct numbers such that their product is a
+multiple of $abc = 7^2 \cdot 11^2 \cdot 13^2$.
+
+\end{document}
