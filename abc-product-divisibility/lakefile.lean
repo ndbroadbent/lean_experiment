@@ -33,3 +33,9 @@ lean_lib «AcerFurProof_v6» where
 lean_lib «AcerFurProof_v7» where
 
 lean_lib «AcerFurProof_v8» where
+
+-- Structural separation (the clean generalization)
+lean_lib «Structural» where
+
+-- Abstract impossibility theorem (no concrete numbers)
+lean_lib «AbstractImpossibility» where
