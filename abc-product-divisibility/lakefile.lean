@@ -21,3 +21,9 @@ lean_lib «ABCElegantProof_v3» where
 lean_lib «AcerFurProof» where
 
 lean_lib «AcerFurProof_v2» where
+
+lean_lib «AcerFurProof_v3» where
+
+lean_lib «AcerFurProof_v4» where
+
+lean_lib «AcerFurProof_v5» where
