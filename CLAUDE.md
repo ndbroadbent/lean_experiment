@@ -10,10 +10,18 @@ This is a Lean 4 project for formal verification of Rust programs using the Aene
 
 ```
 lean_experiment/
-├── password-verifier/     # Self-contained password verification project
+├── password-verifier/     # Self-contained password verification (COMPLETE - no sorry)
 │   ├── rust/src/          # constant_time.rs, password.rs
 │   ├── PasswordVerifier.lean  # Aeneas-generated
 │   └── PasswordProofs.lean    # Proofs
+│
+├── char-concat/           # Character concatenation as pure math
+│   ├── rust/src/          # lib.rs (concat_chars, first_char, second_char)
+│   ├── CharConcat.lean    # Aeneas-generated
+│   └── CharConcatProofs.lean  # Proofs (3 sorry remaining)
+│
+├── abc-product-divisibility/  # Pure math exploration (no Rust/Aeneas)
+│   └── README.md          # Problem: blocks of c consecutive numbers
 │
 ├── utf8-parser/           # Self-contained UTF-8 parser project
 │   ├── rust/src/          # utf8.rs
