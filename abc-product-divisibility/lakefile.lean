@@ -31,3 +31,5 @@ lean_lib «AcerFurProof_v5» where
 lean_lib «AcerFurProof_v6» where
 
 lean_lib «AcerFurProof_v7» where
+
+lean_lib «AcerFurProof_v8» where
