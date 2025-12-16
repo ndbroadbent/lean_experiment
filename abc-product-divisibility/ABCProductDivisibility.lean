@@ -79,18 +79,9 @@ def counterexample_start : ℕ := 5930
 3. Therefore, originalClaim is FALSE
 -/
 
--- Step 1: The values satisfy a < b < c
-theorem counterexample_ordering : a_val < b_val ∧ b_val < c_val := by
-  simp only [a_val, b_val, c_val, p, q, r]
-  omega
+/-! ## Proof outline (completed in ABCCounterexample.lean)
 
--- Step 2 will require computational verification (in ABCCounterexample.lean)
-
--- Step 3: Negation of originalClaim
-theorem originalClaim_false (h : ¬hasValidTriple counterexample_start a_val b_val c_val) :
-    ¬originalClaim := by
-  intro claim
-  have ⟨h1, h2⟩ := counterexample_ordering
-  have pos_a : 0 < a_val := by decide
-  have pos_n : 0 < counterexample_start := by decide
-  exact h (claim a_val b_val c_val pos_a h1 h2 counterexample_start pos_n)
+1. counterexample_ordering: a_val < b_val < c_val
+2. no_valid_triple: ¬hasValidTriple counterexample_start a_val b_val c_val
+3. abc_conjecture_is_false: ¬originalClaim
+-/

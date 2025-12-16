@@ -136,8 +136,68 @@ def hasValidTripleDecidable (start len : ℕ) : Bool :=
         x < y ∧ y < z ∧ productHasRequiredFactors x y z
 
 -- This directly verifies: NO valid triple exists in [5930, 6072]
--- (Takes ~30 seconds due to O(143³) = 2.9M iterations, but it works)
+-- Uncomment to run (takes a few seconds):
 -- #eval hasValidTripleDecidable 5930 143  -- false
+
+/-! ## The Complete Proof -/
+
+/-- Decidable version of hasValidTriple that exactly matches the logical definition -/
+def hasValidTripleDec (n a b c : ℕ) : Bool :=
+  let blockList := List.range c |>.map (· + n)
+  blockList.any fun x =>
+    blockList.any fun y =>
+      blockList.any fun z =>
+        x < y ∧ y < z ∧ (a * b * c) ∣ (x * y * z)
+
+-- Step 1: The values satisfy a < b < c
+theorem counterexample_ordering : a_val < b_val ∧ b_val < c_val := by
+  simp only [a_val, b_val, c_val, p, q, r]
+  omega
+
+-- Step 2: No valid triple exists (direct brute-force check)
+theorem no_valid_triple :
+    hasValidTripleDec counterexample_start a_val b_val c_val = false := by
+  native_decide
+
+-- Step 3: The original claim is FALSE
+theorem abc_conjecture_is_false : ¬originalClaim := by
+  intro claim
+  have ⟨h1, h2⟩ := counterexample_ordering
+  have pos_a : 0 < a_val := by decide
+  have pos_n : 0 < counterexample_start := by decide
+  have ⟨x, y, z, hx, hy, hz, hxy, hyz, hdiv⟩ :=
+    claim a_val b_val c_val pos_a h1 h2 counterexample_start pos_n
+  -- We have a valid triple, but no_valid_triple says hasValidTripleDec = false
+  -- Need to show hasValidTripleDec would return true if such triple existed
+  have htrue : hasValidTripleDec counterexample_start a_val b_val c_val = true := by
+    simp only [hasValidTripleDec]
+    rw [List.any_eq_true]
+    -- x is in blockList
+    simp only [block, Finset.mem_Icc] at hx hy hz
+    have hx' : x ∈ (List.range c_val).map (· + counterexample_start) := by
+      rw [List.mem_map]
+      use x - counterexample_start
+      simp only [List.mem_range]
+      omega
+    use x, hx'
+    rw [List.any_eq_true]
+    have hy' : y ∈ (List.range c_val).map (· + counterexample_start) := by
+      rw [List.mem_map]
+      use y - counterexample_start
+      simp only [List.mem_range]
+      omega
+    use y, hy'
+    rw [List.any_eq_true]
+    have hz' : z ∈ (List.range c_val).map (· + counterexample_start) := by
+      rw [List.mem_map]
+      use z - counterexample_start
+      simp only [List.mem_range]
+      omega
+    use z, hz'
+    simp only [decide_eq_true_eq]
+    exact ⟨hxy, hyz, hdiv⟩
+  rw [no_valid_triple] at htrue
+  contradiction
 
 /-! ## Summary
 
