@@ -5,3 +5,5 @@ rust/.nix-*
 rust/*.lean
 rust/*.llbc
 reference/
+.DS_Store
+references/
